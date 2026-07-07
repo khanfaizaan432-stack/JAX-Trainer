@@ -28,10 +28,11 @@ jobs:
         python -m pip install --upgrade pip
         pip install selenium webdriver-manager
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-    - name: Install Chromium and ChromeDriver
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y chromium-browser chromium-chromedriver
+    - name: Setup Chrome
+      uses: browser-actions/setup-chrome@v1
+      with:
+        chrome-version: stable
+        install-chromedriver: true
     - name: Run Selenium Scraper
       run: python script.py
     - name: Commit and Push Results
