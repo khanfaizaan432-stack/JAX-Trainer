@@ -1,5 +1,6 @@
 import json
 import time
+import shutil
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
@@ -14,7 +15,11 @@ chrome_options.add_argument("--ignore-certificate-errors")
 chrome_options.add_argument("--disable-blink-features=AutomationControlled")
 chrome_options.add_argument("--headless")  
 
-driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=chrome_options)
+local_chromedriver = shutil.which("chromedriver")
+if local_chromedriver:
+    driver = webdriver.Chrome(service=Service(local_chromedriver), options=chrome_options)
+else:
+    driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=chrome_options)
 
 # Open the website
 driver.get("https://stackoverflow.com/") 
