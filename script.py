@@ -1,6 +1,7 @@
 import json
 import time
 import shutil
+import subprocess
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
@@ -13,10 +14,22 @@ from webdriver_manager.chrome import ChromeDriverManager
 chrome_options = Options()
 chrome_options.add_argument("--ignore-certificate-errors")
 chrome_options.add_argument("--disable-blink-features=AutomationControlled")
+chrome_options.add_argument("--no-sandbox")
+chrome_options.add_argument("--disable-dev-shm-usage")
 chrome_options.add_argument("--headless")  
 
 local_chromedriver = shutil.which("chromedriver")
-if local_chromedriver:
+
+def is_usable_driver(driver_path):
+    if not driver_path:
+        return False
+    try:
+        result = subprocess.run([driver_path, "--version"], capture_output=True, text=True)
+        return result.returncode == 0
+    except Exception:
+        return False
+
+if is_usable_driver(local_chromedriver):
     driver = webdriver.Chrome(service=Service(local_chromedriver), options=chrome_options)
 else:
     driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=chrome_options)
